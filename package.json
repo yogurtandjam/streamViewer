@@ -1,0 +1,35 @@
+{
+  "name": "streamviewer",
+  "version": "1.0.0",
+  "description": "View Popular YouTube Live Streams",
+  "main": "index.js",
+  "scripts": {
+    "react-dev": "webpack --progress -d --config webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yogurtandjam/streamViewer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yogurtandjam/streamViewer/issues"
+  },
+  "homepage": "https://github.com/yogurtandjam/streamViewer#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel": "^6.23.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-google-login-component": "^0.9.3",
+    "styled-components": "^3.3.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  }
+}
