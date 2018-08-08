@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Chat from './Chat.jsx';
+import { Input } from './Styles.jsx';
 
 const ChatBoxContainer = styled.div`
   background-color: lavender;
   width: 30%;
-  border-radius: 0 15px 15px 0;
+  border-radius: 0 15px 0 0;
   padding: 5px;
+  box-shadow: 4px 6px 18px -2px rgba(0,0,0,.2);
 `
 
 const ChatTitle = styled.div`
@@ -17,6 +19,7 @@ const ChatTitle = styled.div`
 
 const ChatLog = styled.div`
   padding: 10px;
+  box-shadow: 2px 2px 4px 0px rgba(0,0,0,.2) inset;
   height: 500px;
   overflow-y: auto;
   background-color: #F8F8FF;
@@ -26,14 +29,6 @@ const ChatLog = styled.div`
 const ChatEntry = styled.div`
   text-align:center;
   padding-top: 5px;
-`
-
-const Input = styled.input`
-  height: 2em;
-  border: none;
-  width: 100%;
-  margin-bottom: 5px;
-  border-radius: 3px;
 `
 
 const Submit = styled.button`
@@ -91,7 +86,7 @@ class ChatBox extends React.Component {
       }
     })
     .then(res => {
-      if (this.state.chats.length === 0 || res.data.items[0].id !== this.state.chats[0].id) {
+      if (this.state.chats.length === 0 || res.data.items[res.data.items.length - 1].id !== this.state.chats[this.state.chats.length - 1].id) {
         this.setState({ chats: res.data.items })
         this.scrollToBottom();
       }

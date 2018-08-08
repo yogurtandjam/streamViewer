@@ -11,6 +11,8 @@ const Title = styled.h1`
   color: purple;
   font-family: Helvetica;
   margin: 0px;
+  font-style: italic;
+  font-weight: bold;
 ` 
 const HL = styled.div`
   height: 1.5px;

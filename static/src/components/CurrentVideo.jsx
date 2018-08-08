@@ -10,17 +10,18 @@ const CurrentContainer = styled.div`
   justify-content: space-between;
 `
 
+
+const VideoSide = styled.div`
+padding: 20px;
+width: 100%;
+display: flex;
+flex-direction: column;
+box-shadow: 0 6px 18px 1px rgba(0,0,0,.2);
+border-radius: 0 0 0 15px;
+`
 const VideoPlayer = styled.iframe`
   height: 400px;
   border:none;
-`
-
-const VideoSide = styled.div`
-  padding: 20px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 6px 18px 1px rgba(0,0,0,.2);
 `
 const Title = styled.h2`
   word-wrap: normal;

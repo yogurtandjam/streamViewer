@@ -43,17 +43,19 @@ class App extends React.Component {
       isWatching: false,
       isHome: true,
       isStats: false,
-      isLoggedOut: false,
+      isLoggedOut: true,
       liveStreamId: '',
-      token: "ya29.GlzyBcgQUQhTZUp4rkAgL6tWdppdtZ7NPmVntdKkBYZx2JdvpMZEPvuN7puu1OIRC7UAOsObtgiGfAYpZjjrMvYNTxXsE_Ivv3SKyzNGN6orQq9amPu9f2XjBW68Ww"
+      concurrentViewers: '',
+      timestamp: '',
+      token: "ya29.GlzzBZ4vfi0RJJUZg1faoSA3ULENAKNmE3cidAKw5iBQ-de15f_XPfLTHNU78sLbhk_LZQTB4NXY_2162NH3XfPTbb7HG-3Ip4gNTCR2vl5_eUdQGkE2dO8xDMuUTw"
     }
     this.getStreams = this.getStreams.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
     this.goHome = this.goHome.bind(this);
-    this.getChats = this.getChats.bind(this);
     this.checkStats = this.checkStats.bind(this);
     this.responseGoogle = this.responseGoogle.bind(this);
     this.getLiveStreamId = this.getLiveStreamId.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
   componentDidMount() {
@@ -85,41 +87,30 @@ class App extends React.Component {
       }
     })
     .then(res => {
-      this.setState({ liveStreamId: res.data.items[0].liveStreamingDetails.activeLiveChatId})
-      console.log(this.state.liveStreamId)
-    })
-  }
-
-  getChats(selection) {
-    axios.get('https://www.googleapis.com/youtube/v3/videos/', {
-      params: {
-        id: selection.id.videoId,
-        key: key,
-        part: 'liveStreamingDetails,snippet'
-      }
-    })
-      .then(res => {
-        let chatId = res.data.items[0].liveStreamingDetails.activeLiveChatId;
-        console.log(chatId)
-        axios.get('https://www.googleapis.com/youtube/v3/liveChat/messages/', {
-          params: {
-            liveChatId: chatId,
-            part: 'snippet'
-          },
-          headers: {
-            'Authorization': `Bearer ya29.GlvxBfso0vwMDMWptUp4OEQWu39j4z3bIBrtacvUL4u0qUVBJDeYMLoEspBNZh9BKQZgMYdWec0-hDG0UAbhyfdKZdVkmfEHfqzYkQWI3jRYo42lTCjM1epiEGn8`
-          }
-        })
-        .then(res => res.data.items)
-        .catch(err => console.log('this is the final err ', err))
+      let concurrent = res.data.items[0].liveStreamingDetails.concurrentViewers;
+      let chatId = res.data.items[0].liveStreamingDetails.activeLiveChatId;
+      let timestamp = res.data.items[0].liveStreamingDetails.actualStartTime;
+      this.setState({
+        liveStreamId: chatId,
+        concurrentViewers: concurrent,
+        timestamp: timestamp
       })
-      .catch(err => console.log(err))
+    })
   }
 
   selectVideo(selection) {
     this.setState({
       isWatching: true,
       currentVideo: selection,
+      isHome: false,
+      isLoggedOut: false,
+      isStats: false
+    })
+  }
+
+  goBack() {
+    this.setState({
+      isWatching: true,
       isHome: false,
       isLoggedOut: false,
       isStats: false
@@ -202,7 +193,10 @@ class App extends React.Component {
           <Stats  
             video={this.state.currentVideo}
             isWatching={this.state.isWatching}
-            liveStreamId={this.state.liveStreamId}/>
+            liveStreamId={this.state.liveStreamId}
+            goBack={this.goBack}
+            concurrent={this.state.concurrentViewers}
+            timestamp={this.state.timestamp}/>
         </Container>
       )
     }
