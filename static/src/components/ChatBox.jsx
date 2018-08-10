@@ -67,7 +67,6 @@ class ChatBox extends React.Component {
     this.props.getLiveStreamId(this.props.currentVideo)
     ChatLog.scrollTop = ChatLog.scrollHeight;
     this.Interval = setInterval(()=>this.updateChatBox(),1000);
-    console.log(this.props.currentUserName)
   }
 
   componentWillUnmount() {
@@ -114,7 +113,7 @@ class ChatBox extends React.Component {
   }
 
   saveMessage(text) {
-    axios.post(`ec2-54-241-188-109.us-west-1.compute.amazonaws.com/messages/${this.props.currentUserName}`, {
+    axios.post(`/messages/${this.props.currentUserName}`, {
       'message': text,
       'room': this.props.liveStreamId
     })

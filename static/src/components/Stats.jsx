@@ -107,7 +107,7 @@ class Stats extends React.Component {
 
   getOwnMessages(user, room) {
     let filteredUser = user.replace('%20', ' ')
-    axios.get(`ec2-54-241-188-109.us-west-1.compute.amazonaws.com/users/messages/${filteredUser}/${room}`)
+    axios.get(`/users/messages/${filteredUser}/${room}`)
       .then(res => {
         this.setState({ ownMessages: res.data })
       })

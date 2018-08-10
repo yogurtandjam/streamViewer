@@ -23,7 +23,6 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-google-button": "^0.5.3",
-    "react-google-login-component": "file:react-google-login-component",
     "styled-components": "^3.3.3"
   },
   "devDependencies": {

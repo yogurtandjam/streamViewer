@@ -4,23 +4,29 @@
 # OS Support also exists for jessie & stretch (slim and full).
 # See https://hub.docker.com/r/library/python/ for all supported Python
 # tags from Docker Hub.
-FROM node:9-alpine
+# FROM node:9-alpine
+
+# WORKDIR /app
+# COPY package.json requirements.txt /app/
+
+# RUN apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev postgresql-dev linux-headers make python \
+#     && apk add --update python3 \
+#     && pip3 install -r requirements.txt 
+
+# COPY . /app
+
+# EXPOSE 5000
+
+FROM ubuntu:14.04
+RUN apt-get update -y
+RUN apt-get install --yes nodejs
+# RUN sudo apt-get install npm
+RUN apt-get install -y python-pip python-dev build-essential curl 
 
 WORKDIR /app
 COPY package.json requirements.txt /app/
-# RUN apk --no-cache add --virtual native-deps \
-#   g++ gcc libgcc libstdc++ linux-headers make python && \
-#   npm install --quiet node-gyp -g &&\
-#   npm install --quiet && \
-#   pip install -r requirements.txt 
-#ran this one already
-#--no-cache --virtual .build-deps
-# --no-cache
-RUN apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev postgresql-dev linux-headers make python \
-    && apk add --update python3 \
-    && pip3 install -r requirements.txt 
-
+RUN pip install -r requirements.txt \
+    && npm install
 COPY . /app
 
-EXPOSE 5000
 CMD [ "npm", "start" ]
