@@ -6,7 +6,7 @@ import Header from './components/Header.jsx';
 import key from '../config.js'
 import styled from 'styled-components';
 import axios from 'axios';
-import { GoogleLogin } from '../../react-google-login-component/dist/react-google-login-component.js';
+import { GoogleLogin } from './components/react-google-login-component.js';
 
 const Container = styled.div`
   margin:0px;
@@ -40,14 +40,14 @@ class App extends React.Component {
       currentVideo: '',
       currentComments: {},
       isWatching: false,
-      isHome: true,
+      isHome: false,
       isStats: false,
-      isLoggedOut: false,
+      isLoggedOut: true,
       liveStreamId: '',
       concurrentViewers: '',
       timestamp: '',
       currentUserName: '',
-      token: "ya29.Glz1BdE6oX9udl3P0bl8fDpHP3ey0JLDfkbo62ra_mxeBHbw59ZEHgmT4Ji6qnIavXBA7SNrG0d6E8UGbWQP1gr0Cg4vr4z2YEJjzNKK0i1O5QD49esEngXRqKqOxQ"
+      token: ""
     }
     this.getStreams = this.getStreams.bind(this);
     this.selectVideo = this.selectVideo.bind(this);
@@ -139,7 +139,6 @@ class App extends React.Component {
 
   responseGoogle (googleUser) {
     var access_token = googleUser.getAuthResponse().access_token;
-    console.log(access_token);
     this.setState({
       token: access_token
     })

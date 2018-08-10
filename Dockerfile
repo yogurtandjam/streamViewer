@@ -14,24 +14,11 @@ COPY package.json requirements.txt /app/
 #   npm install --quiet && \
 #   pip install -r requirements.txt 
 #ran this one already
-# RUN apk update && \
-#     apk --no-cache --virtual build-dependencies add \
-#         python \
-#         make \
-#         g++ \
-#         python-dev \
-#         python-pip \
-#         python-setuptools \
-#         groff \
-#         less \
-RUN apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev postgresql-dev \
-    && apk del libressl-dev \
-    && apk add openssl-dev \
-    && apk add --no-cache --update python3 \
-    && pip3 install -r requirements.txt \
-    && apk del openssl-dev \
-    && apk add libressl-dev \
-    && apk del .build-deps
+#--no-cache --virtual .build-deps
+# --no-cache
+RUN apk add --no-cache --virtual .build-deps g++ python3-dev libffi-dev postgresql-dev linux-headers make python \
+    && apk add --update python3 \
+    && pip3 install -r requirements.txt 
 
 COPY . /app
 
