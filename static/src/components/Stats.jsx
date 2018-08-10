@@ -1,10 +1,11 @@
 import React from'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import axios from 'axios';
-import { Input, Button } from './Styles.jsx';
+import { Input, Button, SortButton, IceContainer, WhiteTitle, WhiteContainer } from './Styles.jsx';
 import StatsRow from './StatsRow.jsx';
 import UserList from './UserList.jsx';
 import StreamerInfo from './StreamerInfo.jsx';
+import OwnMessages from './OwnMessages.jsx';
 
 const StatsContainer = styled.div`
   margin-top: 3%;
@@ -35,10 +36,11 @@ const StatsBody = styled.div`
   display:flex;
   flex-direction: row;
   justify-content: space-between;
+  height: 500px;
 `
-const TableContainer = styled.div`
-  width:100%;
+const TableContainer = WhiteContainer.extend`
   overflow-y: auto;
+  border-radius: 0 0 0 10px;
 `
 const UsersTable = styled.table`
   width:100%;
@@ -50,23 +52,34 @@ const Head = styled.thead`
   background-color: #F8F8FF;
 `
 const Th = styled.th`
-  min-width: 150px;
+  min-width: 100px;
+  hover: pointer;
 `
 
 const Body = styled.tbody`
   border-top: 2px solid black;
 `
 
-const UserSearch = styled.div`
-  background-color: #F8F8FF;
-  padding: 10px;
-  width: 100%;
-  max-height: 90%;
-`
+const UserSearch = IceContainer;
+
+const SearchHeader = WhiteTitle.extend`
+  margin-bottom: 10px;
+`;
 
 const BackToVideo = Button.extend`
   margin: 10px;
   float: right;
+`
+
+const SortAscending = SortButton.extend`
+  ${props => props.sortedAscending && css` display: none `}
+`
+
+const SortDescending = SortAscending.extend`
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  ${props => !props.sortedAscending && css` display: none `}
+  ${props => props.sortedAscending && css` display: block`}
 `
 
 class Stats extends React.Component {
@@ -75,14 +88,31 @@ class Stats extends React.Component {
     this.state = {
       messageCount: {},
       text: '',
-      messages: {}
+      messages: {},
+      users: [],
+      sortedAscending: false,
+      ownMessages: []
     }
     this.getStats = this.getStats.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.sortUsernameAscending = this.sortUsernameAscending.bind(this);
+    this.sortUsernameDescending = this.sortUsernameDescending.bind(this);
+    this.getOwnMessages = this.getOwnMessages.bind(this);
   }
 
   componentDidMount() {
     this.getStats(this.props.liveStreamId);
+    this.getOwnMessages(this.props.currentUserName, this.props.liveStreamId)
+  };
+
+  getOwnMessages(user, room) {
+    let filteredUser = user.replace('%20', ' ')
+    axios.get(`ec2-54-241-188-109.us-west-1.compute.amazonaws.com/users/messages/${filteredUser}/${room}`)
+      .then(res => {
+        this.setState({ ownMessages: res.data })
+      })
+      .catch(err => console.log(err))
+      .then(res => console.log(this.state.ownMessages))
   }
 
   getStats(currentVideo) {
@@ -108,12 +138,33 @@ class Stats extends React.Component {
       userMessageIndex[user] ? userMessageIndex[user] ++ : userMessageIndex[user] = 1;
       userMessages[lowerCaseUser] ? userMessages[lowerCaseUser].push(text) : userMessages[lowerCaseUser] = [text];
     })
+    let users = Object.keys(userMessageIndex)
     this.setState({ 
+      users: users,
       messageCount: userMessageIndex,
       messages: userMessages
     });
     console.log('this is users ', userMessageIndex)
     console.log('this is messages', userMessages)
+  }
+
+  sortUsernameAscending(users) {
+    console.log('old users ', users)
+    let sortedUsers = users.slice().sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    this.setState({
+      users: sortedUsers,
+      sortedAscending: true
+    })
+    console.log('new users ', sortedUsers)
+  }
+
+  sortUsernameDescending(users) {
+    console.log('old users ', users)
+    let sortedUsers = users.slice().reverse();
+    this.setState({
+      users: sortedUsers,
+      sortedAscending: false
+    })
   }
 
   handleChange(e) {
@@ -132,20 +183,31 @@ class Stats extends React.Component {
             <UsersTable>
               <Head>
                 <tr>
-                  <Th>Usernames</Th>
+                  <Th onClick={()=> !this.state.sortedAscending ?
+                    this.sortUsernameAscending(this.state.users):
+                    this.sortUsernameDescending(this.state.users)}>
+                    Usernames
+                    <SortAscending
+                      sortedAscending={this.state.sortedAscending}/>
+                    <SortDescending
+                      sortedAscending={this.state.sortedAscending}/>
+                  </Th>
                   <Th>Messages</Th>
                 </tr>
               </Head>
               <Body>
-                {Object.keys(this.state.messageCount).map((user, index) => <StatsRow userName={user} messageCount={this.state.messageCount[user]} key={index}/>)}
+                {this.state.users.map((user, index) => <StatsRow userName={user} messageCount={this.state.messageCount[user]} key={index}/>)}
               </Body>
             </UsersTable>
           </TableContainer>
           <UserSearch>
-            Search for User Messages
+            <SearchHeader>Search for User Messages</SearchHeader>
             <Input onChange={this.handleChange}/>
               <UserList currentSearch={this.state.text} messages={this.state.messages}/>
           </UserSearch>
+          <OwnMessages 
+            messages={this.state.ownMessages}
+            currentUserName={this.props.currentUserName}/>
           <StreamerInfo
             name={this.props.video.snippet.channelTitle}
             concurrent={this.props.concurrent}

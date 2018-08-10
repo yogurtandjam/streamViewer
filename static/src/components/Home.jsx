@@ -16,6 +16,7 @@ const HomeContainer = styled.div`
 const Home = (props) => {
   return (
     <HomeContainer isHome={props.isHome}>
+      {props.getUserName()}
       {props.videos.map((video, index) => <VideoThumbnail video={video} id={index} selectVideo={props.selectVideo}/>)}
     </HomeContainer>
   )

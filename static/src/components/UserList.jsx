@@ -1,12 +1,12 @@
 import React from 'react';
 import UserMessage from './UserMessage.jsx';
 import styled from 'styled-components';
-// currentSearch={this.state.text} message={this.state.messages}
 
 const List = styled.div`
   background-color: white;
   max-width: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 85%;
 `
 

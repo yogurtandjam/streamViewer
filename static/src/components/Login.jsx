@@ -1,54 +1,77 @@
 import React from 'react';
-import styled from 'styled-components';
-import { GoogleLogin } from 'react-google-login-component';
+import GoogleButton from 'react-google-button';
 
-const LoginContainer = styled.div`
-  max-width: 300px;
-  max-height: 500px;
-  text-align: center;
-  display:flex;
-  flex-direction: column;
-  margin: auto;
-  margin-top: 3%;
-  box-shadow: 0 6px 18px 1px rgba(0,0,0,.2);
-  padding: 15px;
-`
-
-const LoginText = styled.h2`
-  font-family: helvetica;
-`
-
-class Login extends React.Component{
- 
-  constructor (props, context) {
-    super(props, context);
-    this.responseGoogle = this.responseGoogle.bind(this);
+export default class GoogleLogin extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      disabled: true
+    };
   }
- 
-  responseGoogle (googleUser) {
-    var id_token = googleUser.getAuthResponse().id_token;
-    var googleId = googleUser.getId();
-    console.log({ googleId });
-    console.log({accessToken: id_token});
-    console.log(this.props)
-    this.props.goHome();
-    //anything else you want to do(save to localStorage)...
+
+  componentDidMount() {
+    const { socialId, scope, fetchBasicProfile } = this.props;
+    ((d, s, id, callback) => {
+      let js, gs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { 
+        this.setState({
+          disabled: false
+        });
+      } else {
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://apis.google.com/js/platform.js';
+        gs.parentNode.insertBefore(js, gs);
+        js.onload = callback;
+      }
+    })(document, 'script', 'google-platform', () => {
+      gapi.load('auth2', () => {
+        this.setState({
+          disabled: false
+        });
+        if (!gapi.auth2.getAuthInstance()) {
+          gapi.auth2.init({
+            client_id: socialId,
+            fetch_basic_profile: fetchBasicProfile,
+            scope: scope
+          });
+        }
+      });
+    });
   }
- 
+
+  checkLoginState (response) {
+    if (auth2.isSignedIn.get()) {
+      const profile = auth2.currentUser.get().getBasicProfile();
+    } else {
+      if(this.props.responseHandler) {
+        this.props.responseHandler({status: response.status});
+      }
+    }
+  }
+
+  clickHandler () {
+    const auth2 = gapi.auth2.getAuthInstance();
+    auth2.signIn().then(googleUser => this.props.responseHandler(googleUser));
+  }
+
   render () {
+    const {
+      socialId, scope, fetchBasicProfile, responseHandler,
+      children, buttonText, ...props
+    } = this.props;
+
+    props.disabled = this.state.disabled || props.disabled;
+
     return (
-      <LoginContainer>
-        <LoginText>Log In</LoginText>
-        <GoogleLogin socialId="371647430195-thi6ovloq7a7kqsf9asro4jca9a9hhoa.apps.googleusercontent.com"
-                     className="google-login"
-                     scope="profile"
-                     fetchBasicProfile={false}
-                     responseHandler={this.responseGoogle}
-                     buttonText="Login With Google"/>
-      </LoginContainer>
-    );
+      <GoogleButton {...props} onClick={this.clickHandler.bind(this)}>
+        {children}
+        {buttonText}
+      </GoogleButton>
+    )
   }
- 
 }
- 
-export default Login;
+
+GoogleLogin.defaultProps = {
+  fetchBasicProfile: false,
+  scope: 'profile'
+}

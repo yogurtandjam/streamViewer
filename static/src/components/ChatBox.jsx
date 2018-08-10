@@ -58,6 +58,7 @@ class ChatBox extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.saveMessage = this.saveMessage.bind(this);
     this.Interval;
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.props.token;
   }
@@ -66,6 +67,7 @@ class ChatBox extends React.Component {
     this.props.getLiveStreamId(this.props.currentVideo)
     ChatLog.scrollTop = ChatLog.scrollHeight;
     this.Interval = setInterval(()=>this.updateChatBox(),1000);
+    console.log(this.props.currentUserName)
   }
 
   componentWillUnmount() {
@@ -104,14 +106,29 @@ class ChatBox extends React.Component {
           }
         }
     })
-    .then(res => this.updateChatBox())
+    .then(res => {
+      this.updateChatBox()
+      this.saveMessage(text)
+    })
     .catch(err => console.log(err))
   }
 
-  handleSubmit() {
-    console.log(this.state.text)
-    this.sendMessage(this.state.text);
-    this.setState({ text: '' })
+  saveMessage(text) {
+    axios.post(`ec2-54-241-188-109.us-west-1.compute.amazonaws.com/messages/${this.props.currentUserName}`, {
+      'message': text,
+      'room': this.props.liveStreamId
+    })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    let inputValue = e.target.children[0].value;
+    if (inputValue.length > 0) {
+      this.sendMessage(this.state.text);
+      this.setState({ text: '' })
+    }
   }
 
   handleChange(e) {
@@ -131,8 +148,10 @@ class ChatBox extends React.Component {
         </div>
       </ChatLog>
       <ChatEntry>
-        <Input type="text" id="text" value={this.state.text} onChange={this.handleChange}/>
-        <Submit onClick={this.handleSubmit}>Submit</Submit>
+        <form onSubmit={this.handleSubmit}>
+          <Input type="text" id="text" value={this.state.text} onChange={this.handleChange}/>
+          <Submit>Submit</Submit>
+        </form>
       </ChatEntry>
     </ChatBoxContainer>
     )

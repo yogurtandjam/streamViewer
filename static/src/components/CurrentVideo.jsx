@@ -61,7 +61,8 @@ const CurrentVideo = (props) => {
         currentVideo={props.currentVideo}
         token={props.token}
         getLiveStreamId={props.getLiveStreamId}
-        liveStreamId={props.liveStreamId}/>
+        liveStreamId={props.liveStreamId}
+        currentUserName={props.currentUserName}/>
     </CurrentContainer>
   )
 }

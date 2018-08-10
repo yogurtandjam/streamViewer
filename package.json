@@ -4,6 +4,7 @@
   "description": "View Popular YouTube Live Streams",
   "main": "index.js",
   "scripts": {
+    "start": "python server/server.py",
     "react-dev": "webpack --progress -d --config webpack.config.js --watch"
   },
   "repository": {
@@ -21,7 +22,8 @@
     "babel": "^6.23.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-google-login-component": "^0.9.3",
+    "react-google-button": "^0.5.3",
+    "react-google-login-component": "file:react-google-login-component",
     "styled-components": "^3.3.3"
   },
   "devDependencies": {
