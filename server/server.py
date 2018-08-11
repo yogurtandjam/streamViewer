@@ -63,7 +63,6 @@ def save_message(name):
         saveUser = User(username=name)
         db.session.add(saveUser)
         userExists = User.query.filter_by(username=name).first()
-    print(userExists.id)
     saveMessage = Message(id=userExists.id, roomid=room, message=data)
     db.session.add(saveMessage)
     db.session.commit()
