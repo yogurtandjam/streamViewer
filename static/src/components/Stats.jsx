@@ -112,7 +112,6 @@ class Stats extends React.Component {
         this.setState({ ownMessages: res.data })
       })
       .catch(err => console.log(err))
-      .then(res => console.log(this.state.ownMessages))
   }
 
   getStats(currentVideo) {
@@ -144,22 +143,17 @@ class Stats extends React.Component {
       messageCount: userMessageIndex,
       messages: userMessages
     });
-    console.log('this is users ', userMessageIndex)
-    console.log('this is messages', userMessages)
   }
 
   sortUsernameAscending(users) {
-    console.log('old users ', users)
     let sortedUsers = users.slice().sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     this.setState({
       users: sortedUsers,
       sortedAscending: true
     })
-    console.log('new users ', sortedUsers)
   }
 
   sortUsernameDescending(users) {
-    console.log('old users ', users)
     let sortedUsers = users.slice().reverse();
     this.setState({
       users: sortedUsers,

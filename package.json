@@ -4,7 +4,7 @@
   "description": "View Popular YouTube Live Streams",
   "main": "index.js",
   "scripts": {
-    "start": "python server/server.py",
+    "start": "sudo python server/server.py",
     "react-dev": "webpack --progress -d --config webpack.config.js --watch"
   },
   "repository": {

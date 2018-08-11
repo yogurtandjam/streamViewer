@@ -7,15 +7,22 @@ The user can access and interact with the YouTube Livechat associate with the st
 The user can also check the stream stats: users, messages, messagecount, concurrent viewers, and time started
 
 
+#notes on local dev environment
+app start () action in server can have parameters removed (app.run(host="0.0.0.0", port=80) for production ec2 deployment)
+npm start script is sudo python server/server.py (won't work for all OS's)
+in order for dev purposes, those changes are not reflected in this hosted version
+
 #dependencies
 high level dependencies - JS, Node + NPM, Python 3+
 
 #how to install
 npm install
 pip install -r requirements.txt
-(this was developed on windows, you may have to add pypiwin32==220 to requirements.txt if you are also using windows. it was removed to not throw errors on non windows machines)
+(this was developed on windows, you may have to add pypiwin32==220 to requirements.txt if you are also using windows. it was removed to not throw errors on non-windows machines)
+
+
 #how to run (commands are from root directory)
-production: python server/server.py
+production: npm start
 
 #how to edit
 nodemon server/server.py

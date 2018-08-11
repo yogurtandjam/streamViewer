@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:NEWT1MES@streamviewer.c19qyuez4kgp.us-west-1.rds.amazonaws.com:5432/streamViewer'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:NEWT1MES@ec2-54-219-148-185.us-west-1.compute.amazonaws.com:5432/streamviewer'
 
 db = SQLAlchemy(app)
 Base = declarative_base()
@@ -33,7 +33,8 @@ class Message(db.Model):
         self.roomid = roomid
         self.message = message
 
-    def row2dict(row):
+    @staticmethod
+    def convertMessageList(row):
         d = []
         for message in row:
             d.append(message.message)
@@ -70,4 +71,5 @@ def save_message(name):
 
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 if __name__ == "__main__":
-  app.run()
+  app.run(host="0.0.0.0", port=80)
+#   app.run()
