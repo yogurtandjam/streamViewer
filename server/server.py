@@ -50,7 +50,7 @@ def user_detail(name, room):
     user = User.query.filter_by(username=name).first()
     if user:
         userid = user.id
-        messages = Message.row2dict(Message.query.filter_by(roomid=room).join(User).filter_by(id=userid).all())
+        messages = Message.convertMessageList(Message.query.filter_by(roomid=room).join(User).filter_by(id=userid).all())
         return jsonify(messages)
     return jsonify({ 'error': 'user not found '})
 
