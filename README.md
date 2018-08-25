@@ -45,3 +45,4 @@ Table is sortable by username only
 Stats Page contains stats separate from Table
   - Did not make sense for a livestream's stats to be recorded and indexed all by Users
     - Some stats are specific to the livestream, not to user messages
+![streamviewerselect](https://user-images.githubusercontent.com/37092291/44621604-d132ea80-a85d-11e8-8a40-fa131e906a57.png)
